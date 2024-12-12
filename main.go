@@ -8,12 +8,12 @@ import (
 )
 
 func main() {
-	database.Connect()
+	database.ConnectDB()
 
 	router := mux.NewRouter()
 	routes.RegisterUserRoutes(router)
-	routes.RegisterStartupRoutes(router)
-	routes.RegisterEvaluetionRoutes(router)
+	//routes.RegisterStartupRoutes(router)
+	//routes.RegisterEvaluetionRoutes(router)
 
 	log.Println("Listening on port 8080")
 	log.Fatal(http.ListenAndServe(":8000", router))

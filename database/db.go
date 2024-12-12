@@ -1,18 +1,17 @@
-package database
+package config
 
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
-
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 )
 
-var db *sql.DB
+var DB *sql.DB
 
-func Connect() {
+func ConnectDB() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -28,10 +27,11 @@ func Connect() {
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		dbUser, dbPassword, dbHost, dbPort, dbName, dbSSLMode)
 
-	DB, err := sql.Open("postgres", connStr)
+	DB, err = sql.Open("pgx", connStr)
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
+
 	err = DB.Ping()
 	if err != nil {
 		log.Fatalf("Error pinging database: %v", err)
