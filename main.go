@@ -1,20 +1,23 @@
 package main
 
 import (
-	"forms_Banca/routes"
-	"github.com/gorilla/mux"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 func main() {
-	database.ConnectDB()
+	database.Connect()
 
-	router := mux.NewRouter()
-	routes.RegisterUserRoutes(router)
-	//routes.RegisterStartupRoutes(router)
-	//routes.RegisterEvaluetionRoutes(router)
+	// Configuração dos endpoints
+	http.HandleFunc("/users", handleUsers)
+	http.HandleFunc("/login", handleLogin)
+	http.HandleFunc("/startups", handleStartups)
+	http.HandleFunc("/evaluations", handleEvaluations)
+	http.HandleFunc("/results", handleResults)
 
-	log.Println("Listening on port 8080")
-	log.Fatal(http.ListenAndServe(":8000", router))
+	// Iniciar o servidor
+	port := ":8080"
+	fmt.Printf("Server running on port %s\n", port)
+	log.Fatal(http.ListenAndServe(port, nil))
 }
