@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -9,15 +8,12 @@ import (
 func main() {
 	database.Connect()
 
-	// Configuração dos endpoints
-	http.HandleFunc("/users", handleUsers)
-	http.HandleFunc("/login", handleLogin)
-	http.HandleFunc("/startups", handleStartups)
-	http.HandleFunc("/evaluations", handleEvaluations)
-	http.HandleFunc("/results", handleResults)
+	mux := http.NewServeMux()
 
-	// Iniciar o servidor
-	port := ":8080"
-	fmt.Printf("Server running on port %s\n", port)
-	log.Fatal(http.ListenAndServe(port, nil))
+	//fs := http.FileServer(http.Dir("./frontend/card"))
+	//mux.Handle("/", fs)
+
+	routes.RegisterRoutes(mux)
+	http.ListenAndServe(":8080", mux)
+	log.Println("Listening on port 8080")
 }
