@@ -1,6 +1,6 @@
 package models
 
-import "golang.org/x/crypto/bcrypt"
+import "forms_Banca/config"
 
 type User struct {
 	ID       int    `json:"id"`
@@ -8,16 +8,15 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func (u *User) HashPassword() error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-	u.Password = string(hashedPassword)
-	return nil
+func (u *User) Create() error {
+	query := "INSERT INTO users (name, password) VALUES ($1, $2)"
+	_, err := config.DB.Exec(query, u.Name, u.Password)
+	return err
 }
 
-func (u *User) CheckPassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
-	return err == nil
+func Authenticate(name, password string) (User, error) {
+	var user User
+	query := "SELECT id, name, password FROM users WHERE name = $1 AND password = $2"
+	err := config.DB.QueryRow(query, name, password).Scan(&user.ID, &user.Name, &user.Password)
+	return user, err
 }

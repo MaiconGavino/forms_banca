@@ -1,19 +1,18 @@
 package main
 
 import (
+	"forms_Banca/config"
+	"forms_Banca/routes"
 	"log"
 	"net/http"
 )
 
 func main() {
-	database.Connect()
+	config.ConnectDB()
+	routes.RegisterRoutes()
 
-	mux := http.NewServeMux()
-
-	//fs := http.FileServer(http.Dir("./frontend/card"))
-	//mux.Handle("/", fs)
-
-	routes.RegisterRoutes(mux)
-	http.ListenAndServe(":8080", mux)
-	log.Println("Listening on port 8080")
+	log.Println("Servidor iniciado na porta 8080...")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatalf("Erro ao iniciar o servidor: %v", err)
+	}
 }
