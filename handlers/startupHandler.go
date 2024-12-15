@@ -26,6 +26,21 @@ func RegisterStartupHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+func ListStartupsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+		return
+	}
+
+	startups, err := models.GetAllStartups()
+	if err != nil {
+		http.Error(w, "Erro ao buscar startups", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(startups)
+}
+
 func EvaluateStartupHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)

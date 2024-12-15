@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"forms_Banca/config"
 	"forms_Banca/models"
 	"net/http"
 )
@@ -38,11 +39,31 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Autenticar usuário
 	user, err := models.Authenticate(credentials.Name, credentials.Password)
 	if err != nil {
 		http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
 		return
 	}
 
-	json.NewEncoder(w).Encode(user)
+	// Identificar se o usuário é admin
+	role := "user"
+	if user.Name == "admin" {
+		role = "admin"
+	}
+
+	// Responder com os dados básicos do usuário
+	response := map[string]string{
+		"role": role,
+		"name": user.Name,
+	}
+
+	json.NewEncoder(w).Encode(response)
+}
+
+func Authenticate(name, password string) (models.User, error) {
+	var user models.User
+	query := "SELECT id, name, password FROM users WHERE name = $1 AND password = $2"
+	err := config.DB.QueryRow(query, name, password).Scan(&user.ID, &user.Name, &user.Password)
+	return user, err
 }

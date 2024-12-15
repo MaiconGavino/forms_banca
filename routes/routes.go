@@ -15,6 +15,12 @@ func RegisterRoutes() {
 		handlers.LoginHandler,
 	)
 	http.HandleFunc(
+		"/startup/list",
+		handlers.ListStartupsHandler,
+	)
+
+	http.HandleFunc(
+
 		"/startup/register",
 		handlers.RegisterStartupHandler,
 	)
