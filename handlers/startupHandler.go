@@ -19,7 +19,7 @@ func RegisterStartupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := startup.Create(); err != nil {
-		http.Error(w, "Erro ao criar startup", http.StatusInternalServerError)
+		http.Error(w, "Erro ao registrar startup", http.StatusInternalServerError)
 		return
 	}
 
@@ -34,29 +34,9 @@ func ListStartupsHandler(w http.ResponseWriter, r *http.Request) {
 
 	startups, err := models.GetAllStartups()
 	if err != nil {
-		http.Error(w, "Erro ao buscar startups", http.StatusInternalServerError)
+		http.Error(w, "Erro ao listar startups", http.StatusInternalServerError)
 		return
 	}
 
 	json.NewEncoder(w).Encode(startups)
-}
-
-func EvaluateStartupHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var evaluation models.Evaluation
-	if err := json.NewDecoder(r.Body).Decode(&evaluation); err != nil {
-		http.Error(w, "Erro ao decodificar JSON", http.StatusBadRequest)
-		return
-	}
-
-	if err := evaluation.Create(); err != nil {
-		http.Error(w, "Erro ao registrar avaliação", http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
 }
